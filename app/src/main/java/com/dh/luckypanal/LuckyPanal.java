@@ -46,7 +46,7 @@ public class LuckyPanal extends SurfaceView implements SurfaceHolder.Callback,Ru
     private double mSpeed; //旋转速度
     private volatile int mStartAngle = 0; //绘制角度 volatile保证变量在线程间的可见性
 
-    private boolean inShouldEnd;
+    private boolean isShouldEnd;
 
     private int mCenter;
 
@@ -84,7 +84,7 @@ public class LuckyPanal extends SurfaceView implements SurfaceHolder.Callback,Ru
         mPadding = getPaddingLeft();
         mRadius = width - mPadding*2;
 
-        mCenter = mRadius/2;
+        mCenter = width/2;
 
         setMeasuredDimension(width, width);
     }
@@ -164,7 +164,22 @@ public class LuckyPanal extends SurfaceView implements SurfaceHolder.Callback,Ru
                     mCanvas.drawArc(mRange,tmpAngle,sweepAngle,true,mArcPaint);
                     
                     drawText(tmpAngle, sweepAngle, mStrs[i]);
+                    
+                    drawIcon(tmpAngle, mImgsBitmap[i]);
+                    
                     tmpAngle += sweepAngle;
+                }
+
+                mStartAngle += mSpeed;
+
+                if(isShouldEnd){
+
+                    mSpeed -= 1;
+
+                }
+                if(mSpeed <= 0){
+                    mSpeed = 0;
+                    isShouldEnd = false;
                 }
 
             }
@@ -174,6 +189,39 @@ public class LuckyPanal extends SurfaceView implements SurfaceHolder.Callback,Ru
                 mHolder.unlockCanvasAndPost(mCanvas);
             }
         }
+
+    }
+
+    public void luckyStart(){
+        mSpeed = 50;
+        isShouldEnd = false;
+    }
+
+    public void luckyEnd(){
+        isShouldEnd = true;
+    }
+
+    public boolean isStart(){
+        return mSpeed != 0;
+    }
+
+    public boolean isShouldEnd(){
+        return isShouldEnd;
+    }
+
+    private void drawIcon(float tmpAngle, Bitmap bitmap) {
+
+        //设置图片宽度为直径的1/8
+        int imgWidth = mRadius / 8;
+
+        float angle = (float) ((tmpAngle + 360 / mItemCount / 2) * Math.PI / 180);
+
+        int x = (int) (mCenter + mRadius / 2 / 2 * Math.cos(angle));
+        int y = (int) (mCenter + mRadius / 2 / 2 * Math.sin(angle));
+
+        Rect rect = new Rect(x - imgWidth/2, y - imgWidth/2, x + imgWidth/2, y + imgWidth/2);
+        mCanvas.drawBitmap(bitmap,null,rect,null);
+
 
     }
 
