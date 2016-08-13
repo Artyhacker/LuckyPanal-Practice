@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!mLuckyPanal.isStart()){
-                    mLuckyPanal.luckyStart();
+                    mLuckyPanal.luckyStart(1);
                     mStartBtn.setImageResource(R.mipmap.stop);
                 } else {
                     if( !mLuckyPanal.isShouldEnd()){

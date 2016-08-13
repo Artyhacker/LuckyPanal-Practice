@@ -44,7 +44,7 @@ public class LuckyPanal extends SurfaceView implements SurfaceHolder.Callback,Ru
     private Paint mTextPaint;
 
     private double mSpeed; //旋转速度
-    private volatile int mStartAngle = 0; //绘制角度 volatile保证变量在线程间的可见性
+    private volatile float mStartAngle = 0; //绘制角度 volatile保证变量在线程间的可见性
 
     private boolean isShouldEnd;
 
@@ -192,12 +192,28 @@ public class LuckyPanal extends SurfaceView implements SurfaceHolder.Callback,Ru
 
     }
 
-    public void luckyStart(){
+    public void luckyStart(int index){
+
+        float angle = 360 / mItemCount;
+
+        float from = 270 - (index + 1) * angle;
+        float end = from + angle;
+
+        //停下来的范围
+        float targetFrom = 4 * 360 + from;
+        float targetEnd = 4 * 360 + end;
+
+        float v1 = (float) ((-1 + Math.sqrt(1+8*targetFrom))/2);
+        float v2 = (float) ((-1 + Math.sqrt(1+8*targetEnd))/2);
+
+        mSpeed = v1 + Math.random()*(v2 - v1);
+
         mSpeed = 50;
         isShouldEnd = false;
     }
 
     public void luckyEnd(){
+        mStartAngle = 0;
         isShouldEnd = true;
     }
 
